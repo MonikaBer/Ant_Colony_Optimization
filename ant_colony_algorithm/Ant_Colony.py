@@ -1,4 +1,4 @@
-from Ant import Ant
+from ant_colony_algorithm.Ant import Ant
 
 
 class AntColony:
