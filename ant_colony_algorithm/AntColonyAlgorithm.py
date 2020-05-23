@@ -1,4 +1,5 @@
 from ant_colony_algorithm.AntColony import AntColony
+from ant_colony_algorithm.Link import Link
 
 
 class AntColonyAlgorithm:
@@ -21,7 +22,7 @@ class AntColonyAlgorithm:
 
         for iteration in range(self.iterations_nr):
             for ant in self.ant_colony.ants:
-                ant.find_path(source_city, destination_city)  # ant is looking for path from source to destination
+                ant.path = self.find_path(source_city, destination_city)  # ant is looking for path from source to destination
                 ant.count_total_path_cost()
                 if best_path == [] or ant.total_path_cost < best_path_cost:
                     best_path = ant.path
@@ -33,3 +34,11 @@ class AntColonyAlgorithm:
             self.usa_map.evaporate_pheromones(self.evaporation_speed, self.min_pheromones_amount)
 
         return best_path, best_path_cost
+
+    def find_path(self, source_city, destination_city):
+        visited_nodes = []
+        path = []
+        city = source_city
+        # while city != destination_city:
+        #     pass
+        return path

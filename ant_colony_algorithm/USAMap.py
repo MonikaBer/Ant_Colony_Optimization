@@ -27,7 +27,13 @@ class USAMap:
             link_desc.pop(1)
             for i in range(6):
                 link_desc.pop(3)
-            self.links.append((Link(int(link_desc[0].lstrip('L')), link_desc[1], link_desc[2], float(link_desc[3]), float(link_desc[4]))))
+            new_link = (Link(int(link_desc[0].lstrip('L')), link_desc[1], link_desc[2], float(link_desc[3]),
+                             float(link_desc[4])))
+            self.links.append(new_link)
+            for node in self.nodes:
+                if node.city == link_desc[1]:
+                    node.add_link(new_link)
+                    break
 
         input_file.close()
 
