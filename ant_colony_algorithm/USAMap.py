@@ -18,7 +18,7 @@ class USAMap:
             node_desc = node.split(' ')
             node_desc.pop()
             node_desc.pop(1)
-            self.nodes.append(Node(node_desc[0], node_desc[1], node_desc[2]))
+            self.nodes.append(Node(node_desc[0], float(node_desc[1]), float(node_desc[2])))
 
         for link in input_file:
             link = link.strip('\n')
@@ -27,13 +27,17 @@ class USAMap:
             link_desc.pop(1)
             for i in range(6):
                 link_desc.pop(3)
-            self.links.append((Link(link_desc[0], link_desc[1], link_desc[2], link_desc[3], link_desc[4])))
+            self.links.append((Link(int(link_desc[0].lstrip('L')), link_desc[1], link_desc[2], float(link_desc[3]), float(link_desc[4]))))
 
         input_file.close()
 
-    def add_pheromones(self, pheromones_amount):
+    def init_pheromones(self, min_pheromones_amount):
         for link in self.links:
-            link.add_pheromones(pheromones_amount)
+            link.add_pheromones(min_pheromones_amount)
+
+    def add_pheromones(self, path, total_path_cost):
+        for link in path:
+            self.links[link.id].pheromones_amount *= (1 + 1 / total_path_cost)
 
     def evaporate_pheromones(self, evaporation_speed, min_pheromones_amount):
         for link in self.links:

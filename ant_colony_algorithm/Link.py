@@ -1,7 +1,7 @@
 class Link:
 
-    def __init__(self, link_id, source_city, target_city, capacity, cost):
-        self.link_id = link_id
+    def __init__(self, id, source_city, target_city, capacity, cost):
+        self.id = id
         self.source_city = source_city
         self.target_city = target_city
         self.capacity = capacity
