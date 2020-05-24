@@ -44,7 +44,8 @@ class USAMap:
 
     def add_pheromones(self, path, total_path_cost):
         for link in path:
-            self.links[link.id].pheromones_amount *= (1 + 1 / total_path_cost)
+            #self.links[link.id].pheromones_amount *= (1 + 1 / total_path_cost)
+            self.links[link.id].pheromones_amount += 100         # try
 
     def evaporate_pheromones(self, evaporation_speed, min_pheromones_amount):
         for link in self.links:

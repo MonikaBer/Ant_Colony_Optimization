@@ -1,8 +1,6 @@
 from ant_colony_algorithm.AntColony import AntColony
 import random
 
-from ant_colony_algorithm.Node import Node
-
 
 class AntColonyAlgorithm:
 
@@ -24,7 +22,8 @@ class AntColonyAlgorithm:
 
         for iteration in range(self.iterations_nr):
             for ant in self.ant_colony.ants:
-                ant.path = self.find_path(self.usa_map.get_node(source_city), self.usa_map.get_node(target_city))  # ant is looking for path from source to destination
+                ant.path = self.find_path(self.usa_map.get_node(source_city), self.usa_map.get_node(
+                    target_city))  # ant is looking for path from source to destination
                 ant.count_total_path_cost()
                 if best_path == [] or ant.total_path_cost < best_path_cost:
                     best_path = ant.path
@@ -45,34 +44,71 @@ class AntColonyAlgorithm:
         probabilities = []
         current_node = source_node
         while current_node != target_node:
-            #print(current_node.city)
             visited_nodes.append(current_node)
             probability_numerators.clear()
             probabilities.clear()
-            for link in current_node.links:
-                probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
+            links_numbers = []
+            for nr, link in enumerate(current_node.links):
+                if not AntColonyAlgorithm.is_node_in_visited_nodes(link.target_node, visited_nodes):
+                    probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
+                    links_numbers.append(nr)
             probability = 0.0
             for numerator in probability_numerators:
                 probability += numerator
             for numerator in probability_numerators:
                 probabilities.append(numerator / probability)
-            max_probability = -1.0
-            links_numbers = []
-            for nr, p in enumerate(probabilities):
-                if p == -1.0 or p > max_probability:
-                    max_probability = p
-                    links_numbers.clear()
-                    links_numbers.append(nr)
-                if p == max_probability:
-                    links_numbers.append(nr)
 
-            selected_link_nr = links_numbers[random.randint(0, links_numbers.__len__()-1)]
+            # probabilities, links_numbers = AntColonyAlgorithm.sort(probabilities, links_numbers)  # in decreasing order
 
-            path.append(current_node.links[selected_link_nr])
-            current_node = current_node.links[selected_link_nr].target_node
-            print(current_node.city)
+            # random link
+            rand = random.random()  # rand float from 0 to 1
+            probability_sum = 0.0
+            selected_link_nr = -1
+            for nr, probability in enumerate(probabilities):
+                probability_sum += probability
+                if rand <= probability:
+                    selected_link_nr = links_numbers[nr]
+                    break
+
+            if selected_link_nr == -1 or probability == 0:  # selected_link_nr is enaugh
+                # TODO: lack of unvisited links from current node -> delete cycle from path; after third time do below instructions (restart ant route)
+                current_node = source_node  # temporary solution
+                visited_nodes.clear()  # temporary solution
+                path.clear()  # temporary solution
+                # print(current_node.city)
+                continue
+            else:
+                path.append(current_node.links[selected_link_nr])
+                current_node = current_node.links[selected_link_nr].target_node
+                # print(current_node.city)
 
         return path
 
     def count_probability_numerator(self, pheromones_amount, cost):
-        return pow(pheromones_amount, self.alpha) * pow(cost, self.beta)
+        probability_numerator = pow(pheromones_amount, self.alpha) * pow(1 / pow(cost, 2), self.beta)
+        return probability_numerator
+
+    @staticmethod
+    def sort(list_to_sort, related_list):
+        for i in range(len(list_to_sort)):
+            j = len(list_to_sort) - 1
+            while j > i:
+                if list_to_sort[j] > list_to_sort[j - 1]:
+                    list_to_sort = AntColonyAlgorithm.exchange(list_to_sort, j, j - 1)
+                    related_list = AntColonyAlgorithm.exchange(related_list, j, j - 1)
+                j -= 1
+        return list_to_sort, related_list
+
+    @staticmethod
+    def exchange(input_list, index1, index2):
+        tmp = input_list[index1]
+        input_list[index1] = input_list[index2]
+        input_list[index2] = tmp
+        return input_list
+
+    @staticmethod
+    def is_node_in_visited_nodes(checked_node, visited_nodes):
+        if checked_node in visited_nodes:
+            return True
+        else:
+            return False
