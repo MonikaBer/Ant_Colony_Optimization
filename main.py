@@ -4,10 +4,10 @@ from ant_colony_algorithm.USAMap import USAMap
 
 def main():
     usa_map = USAMap("input")
-    ant_colony_algorithm = AntColonyAlgorithm(usa_map, ant_colony_size=40, iterations_nr=100, alfa=0.5, beta=0.5,
+    ant_colony_algorithm = AntColonyAlgorithm(usa_map, ant_colony_size=40, iterations_nr=100, alpha=0.5, beta=0.5,
                                               evaporation_speed=0.7, min_pheromones_amount=1.0)
 
-    best_path, best_path_cost = ant_colony_algorithm.start("Los Angeles", "Atlanta")
+    best_path, best_path_cost = ant_colony_algorithm.start("LosAngeles", "Atlanta")
     print("The best path has the total cost: {}".format(best_path_cost))
     print("The best path:")
     for link in best_path:

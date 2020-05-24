@@ -1,9 +1,9 @@
 class Link:
 
-    def __init__(self, id, source_city, target_city, capacity, cost):
+    def __init__(self, id, source_node, target_node, capacity, cost):
         self.id = id
-        self.source_city = source_city
-        self.target_city = target_city
+        self.source_node = source_node
+        self.target_node = target_node
         self.capacity = capacity
         self.cost = cost
         self.pheromones_amount = 0.0

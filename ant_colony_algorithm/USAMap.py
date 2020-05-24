@@ -27,7 +27,8 @@ class USAMap:
             link_desc.pop(1)
             for i in range(6):
                 link_desc.pop(3)
-            new_link = (Link(int(link_desc[0].lstrip('L')), link_desc[1], link_desc[2], float(link_desc[3]),
+            new_link = (Link(int(link_desc[0].lstrip('L')), self.get_node(link_desc[1]), self.get_node(link_desc[2]),
+                             float(link_desc[3]),
                              float(link_desc[4])))
             self.links.append(new_link)
             for node in self.nodes:
@@ -48,3 +49,8 @@ class USAMap:
     def evaporate_pheromones(self, evaporation_speed, min_pheromones_amount):
         for link in self.links:
             link.evaporate_pheromones(evaporation_speed, min_pheromones_amount)
+
+    def get_node(self, city_name):
+        for node in self.nodes:
+            if node.city == city_name:
+                return node
