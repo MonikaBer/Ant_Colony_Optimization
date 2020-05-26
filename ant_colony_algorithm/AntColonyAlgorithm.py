@@ -14,7 +14,10 @@ class AntColonyAlgorithm:
         self.min_pheromones_amount = min_pheromones_amount
 
         self.ant_colony = AntColony(ant_colony_size)  # create ant colony
-        usa_map.init_pheromones(min_pheromones_amount)  # init minimum pheromones amount on the links
+        self.usa_map.init_pheromones(min_pheromones_amount)  # init minimum pheromones amount on the links
+
+    def reset_pheromones(self):
+        self.usa_map.init_pheromones(self.min_pheromones_amount)
 
     def start(self, source_city, target_city):
         best_path = []

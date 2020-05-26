@@ -15,3 +15,6 @@ class Link:
         self.pheromones_amount *= (1 - evaporation_speed)
         if self.pheromones_amount < min_pheromones_amount:
             self.pheromones_amount = min_pheromones_amount
+
+    def __eq__(self, other):
+        return self.id == other.id and self.source_node == other.source_node and self.target_node == other.target_node

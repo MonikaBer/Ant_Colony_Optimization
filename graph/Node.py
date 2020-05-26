@@ -8,3 +8,6 @@ class Node:
 
     def add_link(self, link):
         self.links.append(link)
+
+    def __eq__(self, other):
+        return self.city == other.city

@@ -1,5 +1,5 @@
-from ant_colony_algorithm.Link import Link
-from ant_colony_algorithm.Node import Node
+from graph.Link import Link
+from graph.Node import Node
 
 
 class USAMap:
@@ -7,6 +7,7 @@ class USAMap:
     def __init__(self, input_file_name):
         self.nodes = []
         self.links = []
+        self.removed_links = []
 
         input_file = open(input_file_name, "r")
 
@@ -40,7 +41,8 @@ class USAMap:
 
     def init_pheromones(self, min_pheromones_amount):
         for link in self.links:
-            link.add_pheromones(min_pheromones_amount)
+            # link.add_pheromones(min_pheromones_amount)
+            link.pheromones_amount = min_pheromones_amount
 
     def add_pheromones(self, path, total_path_cost):
         for link in path:
@@ -55,3 +57,12 @@ class USAMap:
         for node in self.nodes:
             if node.city == city_name:
                 return node
+
+    def remove_link(self, link_to_remove):
+        if link_to_remove in self.links:
+            self.links.remove(link_to_remove)
+            self.removed_links.append(link_to_remove)
+
+    def reset(self):
+        self.links += self.removed_links
+        self.removed_links.clear()
