@@ -33,7 +33,7 @@ class YenAlgorithm:
         return False
 
     def restore_map(self):
-        self.usa_map.reset()
+        self.usa_map.reset()  # load full map
         self.ant_algo.reset_pheromones()
 
     def add_next_shortest(self):

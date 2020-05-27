@@ -15,9 +15,8 @@ class Path:
         result = "path: "
         if len(self.links) > 0:
             for link in self.links:
-                result = result + link.source_node.city
-                result = result + '-'
-            result = result + self.links[-1].target_node.city
+                result += link.source_node.city + '-'
+            result += self.links[-1].target_node.city
         return result
 
     def __hash__(self):

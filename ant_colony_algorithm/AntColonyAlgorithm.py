@@ -17,7 +17,7 @@ class AntColonyAlgorithm:
         self.usa_map.init_pheromones(min_pheromones_amount)  # init minimum pheromones amount on the links
 
     def reset_pheromones(self):
-        self.usa_map.init_pheromones(self.min_pheromones_amount)
+        self.usa_map.init_pheromones(self.min_pheromones_amount)  # ?
 
     def start(self, source_city, target_city):
         best_path = []

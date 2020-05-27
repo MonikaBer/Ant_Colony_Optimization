@@ -1,6 +1,6 @@
 from ant_colony_algorithm.AntColonyAlgorithm import AntColonyAlgorithm
 from graph.USAMap import USAMap
-from yens_algorithm.yen import YenAlgorithm
+from yens_algorithm.YenAlgorithm import YenAlgorithm
 from dijkstra.dijkstra import dijkstra
 
 
