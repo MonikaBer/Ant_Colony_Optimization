@@ -43,10 +43,7 @@ class AntColonyAlgorithm:
                 ant.cycles_number += 1
                 if ant.cycles_number == 3:  # cycle occured for the third time -> move the ant to the source node
                     current_node = source_node
-                    ant.visited_nodes.clear()
-                    ant.path.clear()
-                    ant.cycles_number = 0
-                    ant.returns_to_base_number += 1
+                    ant.return_to_base()
                     if ant.returns_to_base_number == 10:
                         return Path([], 0.0)
                 else:  # only delete cycle from path
@@ -81,6 +78,12 @@ class AntColonyAlgorithm:
                 if rand <= probability_sum:
                     selected_link_nr = links_numbers[nr]
                     break
+            if selected_link_nr == -1:
+                current_node = source_node
+                ant.return_to_base()
+                if ant.returns_to_base_number == 10:
+                    return Path([], 0.0)
+                continue
             the_next_link = [current_node.links[selected_link_nr]]
             the_next_link_cost = current_node.links[selected_link_nr].cost
             ant.path += (Path(the_next_link, the_next_link_cost))
