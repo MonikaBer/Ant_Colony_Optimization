@@ -45,18 +45,8 @@ class AntColonyAlgorithm:
                 if not is_ant_able_to_traverse:
                     return Path([], 0.0)
             ant.visited_nodes.append(current_node)
-            navigator = Navigator()
-            for nr, link in enumerate(current_node.links):
-                if len(ant.visited_nodes) > 1:
-                    if link.target_node == ant.visited_nodes[-2]:
-                        continue
-                navigator.probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
-                navigator.links_numbers.append(nr)
-            probability = 0.0
-            for numerator in navigator.probability_numerators:
-                probability += numerator
-            for nr, numerator in enumerate(navigator.probability_numerators):
-                navigator.probabilities.append(numerator / probability)
+            navigator = Navigator(self.alpha, self.beta)
+            navigator.count_probabilities(ant, current_node.links)
 
             rand = random.random()  # rand link (rand a number from 0.0 to 1.0)
             while rand == 0.0:
@@ -79,11 +69,6 @@ class AntColonyAlgorithm:
             ant.path += (Path(the_next_link, the_next_link_cost))
             current_node = current_node.links[selected_link_nr].target_node
         return ant.path
-
-    def count_probability_numerator(self, pheromones_amount, cost):
-        # probability_numerator = pow(pheromones_amount, self.alpha) * pow(1 / pow(cost, 2), self.beta)
-        probability_numerator = pow(pheromones_amount, self.alpha) * pow(1 / cost, self.beta)
-        return probability_numerator
 
     @staticmethod
     def is_node_in_visited_nodes(checked_node, visited_nodes):
