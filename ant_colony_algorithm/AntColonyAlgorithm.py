@@ -39,8 +39,10 @@ class AntColonyAlgorithm:
         if source_node == target_node:
             return Path([], 0.0)
         while current_node != target_node:
-            if current_node in ant.visited_nodes:  # cycle occured
-                ant.handle_cycle(source_node)
+            if current_node in ant.visited_nodes:
+                is_ant_able_to_traverse = ant.handle_cycle(source_node)
+                if not is_ant_able_to_traverse:
+                    return Path([], 0.0)
             ant.visited_nodes.append(current_node)
             probability_numerators = []
             probabilities = []
@@ -57,10 +59,7 @@ class AntColonyAlgorithm:
             for nr, numerator in enumerate(probability_numerators):
                 probabilities.append(numerator / probability)
 
-            # probabilities, links_numbers = AntColonyAlgorithm.sort(probabilities, links_numbers)  # in decreasing order
-
-            # random link
-            rand = random.random()  # rand float from 0 to 1
+            rand = random.random()  # rand link (rand a number from 0.0 to 1.0)
             while rand == 0.0:
                 rand = random.random()
             probability_sum = 0.0
