@@ -1,3 +1,4 @@
+from ant_colony_algorithm.Ant import Ant
 from ant_colony_algorithm.AntColony import AntColony
 import random
 
@@ -6,8 +7,7 @@ from graph.Path import Path
 
 class AntColonyAlgorithm:
 
-    def __init__(self, usa_map, ant_colony_size, iterations_nr, alpha, beta, evaporation_speed, min_pheromones_amount):
-        self.usa_map = usa_map
+    def __init__(self, ant_colony_size, iterations_nr, alpha, beta, evaporation_speed, min_pheromones_amount):
         self.ant_colony_size = ant_colony_size
         self.iterations_nr = iterations_nr
         self.alpha = alpha
@@ -16,53 +16,49 @@ class AntColonyAlgorithm:
         self.min_pheromones_amount = min_pheromones_amount
 
         self.ant_colony = AntColony(ant_colony_size)  # create ant colony
-        self.usa_map.init_pheromones(min_pheromones_amount)  # init minimum pheromones amount on the links
 
-    def reset_pheromones(self):
-        self.usa_map.init_pheromones(self.min_pheromones_amount)  # ?
-
-    def start(self, source_city, target_city):
+    def start(self, source_city, target_city, usa_map):
+        usa_map.init_pheromones(self.min_pheromones_amount)  # init minimum pheromones amount on the links
         best_path = Path([])
 
         for iteration in range(self.iterations_nr):
             for ant in self.ant_colony.ants:
-                ant.path = self.find_path(self.usa_map.get_node(source_city), self.usa_map.get_node(
-                    target_city))  # ant is looking for path from source to destination
+                ant.path = self.find_path(usa_map.get_node(source_city), usa_map.get_node(target_city), ant)  # ant is looking for path from source to destination
                 if len(best_path) == 0 or ant.path < best_path:
                     best_path = ant.path
                     # self.usa_map.add_pheromones(ant.path)  # actualization of pheromones on current path (found by ant)   # triaaaaaaaal
                     print(str(best_path))
             for ant in self.ant_colony.ants:
-                self.usa_map.add_pheromones(ant.path)  # actualization of pheromones on current path (found by ant)
-            self.usa_map.evaporate_pheromones(self.evaporation_speed, self.min_pheromones_amount)
+                usa_map.add_pheromones(ant.path)  # actualization of pheromones on current path (found by ant)
+            usa_map.evaporate_pheromones(self.evaporation_speed, self.min_pheromones_amount)
         return best_path
 
-    def find_path(self, source_node, target_node):
-        visited_nodes = []
-        path = Path([])
+    def find_path(self, source_node, target_node, ant):
+        ant = Ant()
         current_node = source_node
         if source_node == target_node:
             return Path([], 0.0)
-        cycles_counter = 0
         while current_node != target_node:
-
-            if current_node in visited_nodes:  # cycle occured
-                cycles_counter += 1
-                if cycles_counter == 3:  # cycle occured for the third time -> move the ant to the source node
+            if current_node in ant.visited_nodes:  # cycle occured
+                ant.cycles_number += 1
+                if ant.cycles_number == 3:  # cycle occured for the third time -> move the ant to the source node
                     current_node = source_node
-                    visited_nodes.clear()
-                    path.clear()
-                    cycles_counter = 0
+                    ant.visited_nodes.clear()
+                    ant.path.clear()
+                    ant.cycles_number = 0
+                    ant.returns_to_base_number += 1
+                    if ant.returns_to_base_number == 10:
+                        return Path([], 0.0)
                 else:  # only delete cycle from path
-                    path.delete_last_cycle()
-                    visited_nodes = AntColonyAlgorithm.delete_last_cycle(visited_nodes, current_node)
-            visited_nodes.append(current_node)
+                    ant.path.delete_last_cycle()
+                    AntColonyAlgorithm.delete_last_cycle(ant.visited_nodes, current_node)
+            ant.visited_nodes.append(current_node)
             probability_numerators = []
             probabilities = []
             links_numbers = []
             for nr, link in enumerate(current_node.links):
-                if len(visited_nodes) > 1:
-                    if link.target_node == visited_nodes[-2]:
+                if len(ant.visited_nodes) > 1:
+                    if link.target_node == ant.visited_nodes[-2]:
                         continue
                 probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
                 links_numbers.append(nr)
@@ -87,9 +83,9 @@ class AntColonyAlgorithm:
                     break
             the_next_link = [current_node.links[selected_link_nr]]
             the_next_link_cost = current_node.links[selected_link_nr].cost
-            path += (Path(the_next_link, the_next_link_cost))
+            ant.path += (Path(the_next_link, the_next_link_cost))
             current_node = current_node.links[selected_link_nr].target_node
-        return path
+        return ant.path
 
     def count_probability_numerator(self, pheromones_amount, cost):
         # probability_numerator = pow(pheromones_amount, self.alpha) * pow(1 / pow(cost, 2), self.beta)
