@@ -18,7 +18,6 @@ class AntColonyAlgorithm:
     def start(self, source_city, target_city, usa_map):
         usa_map.init_pheromones(self.min_pheromones_amount)  # init minimum pheromones amount on the links
         best_path = Path([])
-
         ant_colony = AntColony(self.ant_colony_size, source_city)  # create ant colony
 
         for iteration in range(self.iterations_nr):
@@ -58,21 +57,3 @@ class AntColonyAlgorithm:
             ant.path += (Path(the_next_link, the_next_link_cost))
             current_node = current_node.links[next_link_nr].target_node
         return ant.path
-
-    # @staticmethod
-    # def sort(list_to_sort, related_list):
-    #     for i in range(len(list_to_sort)):
-    #         j = len(list_to_sort) - 1
-    #         while j > i:
-    #             if list_to_sort[j] > list_to_sort[j - 1]:
-    #                 list_to_sort = AntColonyAlgorithm.exchange(list_to_sort, j, j - 1)
-    #                 related_list = AntColonyAlgorithm.exchange(related_list, j, j - 1)
-    #             j -= 1
-    #     return list_to_sort, related_list
-
-    # @staticmethod
-    # def exchange(input_list, index1, index2):
-    #     tmp = input_list[index1]
-    #     input_list[index1] = input_list[index2]
-    #     input_list[index2] = tmp
-    #     return input_list
