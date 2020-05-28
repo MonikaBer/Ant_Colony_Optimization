@@ -30,6 +30,8 @@ class AntColonyAlgorithm:
                     target_city))  # ant is looking for path from source to destination
                 if len(best_path) == 0 or ant.path < best_path:
                     best_path = ant.path
+                    # self.usa_map.add_pheromones(ant.path)  # actualization of pheromones on current path (found by ant)   # triaaaaaaaal
+                    print(str(best_path))
             for ant in self.ant_colony.ants:
                 self.usa_map.add_pheromones(ant.path)  # actualization of pheromones on current path (found by ant)
             self.usa_map.evaporate_pheromones(self.evaporation_speed, self.min_pheromones_amount)
@@ -43,50 +45,104 @@ class AntColonyAlgorithm:
             return Path([], 0.0)
         cycles_counter = 0
         while current_node != target_node:
-            if current_node in visited_nodes:  # cycle occured
-                cycles_counter += 1
-                if cycles_counter == 3:  # cycle occured for the third time -> move the ant to the source node
-                    current_node = source_node
-                    visited_nodes.clear()
-                    path.clear()
-                    cycles_counter = 0
-                else:  # only delete cycle from path
-                    path.delete_last_cycle()
-                    visited_nodes = AntColonyAlgorithm.delete_last_cycle(visited_nodes, current_node)
-            visited_nodes.append(current_node)
-            probability_numerators = []
-            probabilities = []
-            links_numbers = []
-            for nr, link in enumerate(current_node.links):
-                probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
-                links_numbers.append(nr)
-            probability = 0.0
-            for numerator in probability_numerators:
-                probability += numerator
-            for numerator in probability_numerators:
-                probabilities.append(numerator / probability)
+            if current_node.city == "E":
+                if current_node in visited_nodes:  # cycle occured
+                    cycles_counter += 1
+                    if cycles_counter == 3:  # cycle occured for the third time -> move the ant to the source node
+                        current_node = source_node
+                        visited_nodes.clear()
+                        path.clear()
+                        cycles_counter = 0
+                    else:  # only delete cycle from path
+                        path.delete_last_cycle()
+                        visited_nodes = AntColonyAlgorithm.delete_last_cycle(visited_nodes, current_node)
+                visited_nodes.append(current_node)
+                probability_numerators = []
+                probabilities = []
+                links_numbers = []
+                backward_link_nr = -1
+                for nr, link in enumerate(current_node.links):
+                    if len(visited_nodes) > 1:
+                        if link.target_node == visited_nodes[-2]:
+                            backward_link_nr = nr
+                    if backward_link_nr != nr:
+                        probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
+                        links_numbers.append(nr)
+                probability = 0.0
+                for numerator in probability_numerators:
+                    probability += numerator
+                for numerator in probability_numerators:
+                    probabilities.append(numerator / probability)
 
-            # probabilities, links_numbers = AntColonyAlgorithm.sort(probabilities, links_numbers)  # in decreasing order
+                # probabilities, links_numbers = AntColonyAlgorithm.sort(probabilities, links_numbers)  # in decreasing order
 
-            # random link
-            rand = random.random()  # rand float from 0 to 1
-            while rand == 0.0:
-                rand = random.random()
-            probability_sum = 0.0
-            selected_link_nr = -1
-            for nr, probability in enumerate(probabilities):
-                probability_sum += probability
-                if rand <= probability:
-                    selected_link_nr = links_numbers[nr]
-                    break
-            the_next_link = [current_node.links[selected_link_nr]]
-            the_next_link_cost = current_node.links[selected_link_nr].cost
-            path += (Path(the_next_link, the_next_link_cost))
-            current_node = current_node.links[selected_link_nr].target_node
+                # random link
+                rand = random.random()  # rand float from 0 to 1
+                while rand == 0.0:
+                    rand = random.random()
+                probability_sum = 0.0
+                selected_link_nr = -1
+                for nr, probability in enumerate(probabilities):
+                    probability_sum += probability
+                    if rand <= probability:
+                        selected_link_nr = links_numbers[nr]
+                        break
+                the_next_link = [current_node.links[selected_link_nr]]
+                the_next_link_cost = current_node.links[selected_link_nr].cost
+                path += (Path(the_next_link, the_next_link_cost))
+                current_node = current_node.links[selected_link_nr].target_node
+            else:
+                if current_node in visited_nodes:  # cycle occured
+                    cycles_counter += 1
+                    if cycles_counter == 3:  # cycle occured for the third time -> move the ant to the source node
+                        current_node = source_node
+                        visited_nodes.clear()
+                        path.clear()
+                        cycles_counter = 0
+                    else:  # only delete cycle from path
+                        path.delete_last_cycle()
+                        visited_nodes = AntColonyAlgorithm.delete_last_cycle(visited_nodes, current_node)
+                visited_nodes.append(current_node)
+                probability_numerators = []
+                probabilities = []
+                links_numbers = []
+                backward_link_nr = -1
+                for nr, link in enumerate(current_node.links):
+                    if len(visited_nodes) > 1:
+                        if link.target_node == visited_nodes[-2]:
+                            backward_link_nr = nr
+                    if backward_link_nr != nr:
+                        probability_numerators.append(
+                            self.count_probability_numerator(link.pheromones_amount, link.cost))
+                        links_numbers.append(nr)
+                probability = 0.0
+                for numerator in probability_numerators:
+                    probability += numerator
+                for numerator in probability_numerators:
+                    probabilities.append(numerator / probability)
+
+                # probabilities, links_numbers = AntColonyAlgorithm.sort(probabilities, links_numbers)  # in decreasing order
+
+                # random link
+                rand = random.random()  # rand float from 0 to 1
+                while rand == 0.0:
+                    rand = random.random()
+                probability_sum = 0.0
+                selected_link_nr = -1
+                for nr, probability in enumerate(probabilities):
+                    probability_sum += probability
+                    if rand <= probability:
+                        selected_link_nr = links_numbers[nr]
+                        break
+                the_next_link = [current_node.links[selected_link_nr]]
+                the_next_link_cost = current_node.links[selected_link_nr].cost
+                path += (Path(the_next_link, the_next_link_cost))
+                current_node = current_node.links[selected_link_nr].target_node
         return path
 
     def count_probability_numerator(self, pheromones_amount, cost):
-        probability_numerator = pow(pheromones_amount, self.alpha) * pow(1 / pow(cost, 2), self.beta)
+        # probability_numerator = pow(pheromones_amount, self.alpha) * pow(1 / pow(cost, 2), self.beta)
+        probability_numerator = pow(pheromones_amount, self.alpha) * pow(1 / pow(cost, 1), self.beta)
         return probability_numerator
 
     @staticmethod
@@ -98,7 +154,7 @@ class AntColonyAlgorithm:
 
     @staticmethod
     def delete_last_cycle(visited_nodes, current_node):
-        for i in range(len(visited_nodes)-2, 0, -1):
+        for i in range(len(visited_nodes)-2, -1, -1):
             if visited_nodes[i] == current_node:
                 return visited_nodes[:i]
 
