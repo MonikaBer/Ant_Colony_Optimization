@@ -60,18 +60,16 @@ class AntColonyAlgorithm:
                 probability_numerators = []
                 probabilities = []
                 links_numbers = []
-                backward_link_nr = -1
                 for nr, link in enumerate(current_node.links):
                     if len(visited_nodes) > 1:
                         if link.target_node == visited_nodes[-2]:
-                            backward_link_nr = nr
-                    if backward_link_nr != nr:
-                        probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
-                        links_numbers.append(nr)
+                            continue
+                    probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
+                    links_numbers.append(nr)
                 probability = 0.0
                 for numerator in probability_numerators:
                     probability += numerator
-                for numerator in probability_numerators:
+                for nr, numerator in enumerate(probability_numerators):
                     probabilities.append(numerator / probability)
 
                 # probabilities, links_numbers = AntColonyAlgorithm.sort(probabilities, links_numbers)  # in decreasing order
@@ -84,7 +82,9 @@ class AntColonyAlgorithm:
                 selected_link_nr = -1
                 for nr, probability in enumerate(probabilities):
                     probability_sum += probability
-                    if rand <= probability:
+                    if rand <= probability_sum:
+                        if nr == 2:
+                            print("E-G wybrane")
                         selected_link_nr = links_numbers[nr]
                         break
                 the_next_link = [current_node.links[selected_link_nr]]
@@ -131,7 +131,7 @@ class AntColonyAlgorithm:
                 selected_link_nr = -1
                 for nr, probability in enumerate(probabilities):
                     probability_sum += probability
-                    if rand <= probability:
+                    if rand <= probability_sum:
                         selected_link_nr = links_numbers[nr]
                         break
                 the_next_link = [current_node.links[selected_link_nr]]

@@ -47,6 +47,8 @@ class USAMap:
         for link in path:
             for nr, i in enumerate(self.links):
                 if link == i:
+                    if link.source_node.city == "E" and link.target_node.city == "G":
+                        print("odłożenie feromonów na E-G")
                     # self.links[nr].pheromones_amount += 100
                     self.links[nr].pheromones_amount *= (1 + 1 / path.cost)
                     break
