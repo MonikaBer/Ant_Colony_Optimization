@@ -66,7 +66,10 @@ class USAMap:
         if link_to_remove in self.links:
             self.links.remove(link_to_remove)
             self.removed_links.append(link_to_remove)
+            self.get_node(link_to_remove.source_node.city).links.remove(link_to_remove)
 
     def reset(self):
         self.links += self.removed_links
+        for link in self.removed_links:
+            self.get_node(link.source_node.city).add_link(link)
         self.removed_links.clear()
