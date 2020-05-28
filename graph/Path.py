@@ -38,3 +38,18 @@ class Path:
 
     def __bool__(self):
         return bool(len(self.links))
+
+    def clear(self):
+        self.links = []
+        self.cost = 0
+
+    def len(self):
+        return len(self.links)
+
+    def delete_last_cycle(self):
+        reference_node = self.links[-1].target_node
+        for i in range(len(self.links)-2, 0, -1):
+            if self.links[i].source_node == reference_node:
+                for j in range(i, len(self.links)-1, 1):
+                    self.cost -= self.links[j].cost
+                self.links = self.links[:i]
