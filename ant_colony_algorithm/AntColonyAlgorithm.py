@@ -2,6 +2,7 @@ from ant_colony_algorithm.Ant import Ant
 from ant_colony_algorithm.AntColony import AntColony
 import random
 
+from ant_colony_algorithm.Navigator import Navigator
 from graph.Path import Path
 
 
@@ -44,30 +45,28 @@ class AntColonyAlgorithm:
                 if not is_ant_able_to_traverse:
                     return Path([], 0.0)
             ant.visited_nodes.append(current_node)
-            probability_numerators = []
-            probabilities = []
-            links_numbers = []
+            navigator = Navigator()
             for nr, link in enumerate(current_node.links):
                 if len(ant.visited_nodes) > 1:
                     if link.target_node == ant.visited_nodes[-2]:
                         continue
-                probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
-                links_numbers.append(nr)
+                navigator.probability_numerators.append(self.count_probability_numerator(link.pheromones_amount, link.cost))
+                navigator.links_numbers.append(nr)
             probability = 0.0
-            for numerator in probability_numerators:
+            for numerator in navigator.probability_numerators:
                 probability += numerator
-            for nr, numerator in enumerate(probability_numerators):
-                probabilities.append(numerator / probability)
+            for nr, numerator in enumerate(navigator.probability_numerators):
+                navigator.probabilities.append(numerator / probability)
 
             rand = random.random()  # rand link (rand a number from 0.0 to 1.0)
             while rand == 0.0:
                 rand = random.random()
             probability_sum = 0.0
             selected_link_nr = -1
-            for nr, probability in enumerate(probabilities):
+            for nr, probability in enumerate(navigator.probabilities):
                 probability_sum += probability
                 if rand <= probability_sum:
-                    selected_link_nr = links_numbers[nr]
+                    selected_link_nr = navigator.links_numbers[nr]
                     break
             if selected_link_nr == -1:
                 current_node = source_node
