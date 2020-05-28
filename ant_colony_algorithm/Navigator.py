@@ -1,3 +1,6 @@
+import random
+
+
 class Navigator:
 
     def __init__(self, alpha, beta):
@@ -24,3 +27,15 @@ class Navigator:
         # probability_numerator = pow(pheromones_amount, self.alpha) * pow(1 / pow(cost, 2), self.beta)
         probability_numerator = pow(pheromones_amount, self.alpha) * pow(1 / cost, self.beta)
         return probability_numerator
+
+    def choose_next_link(self):
+        rand = random.random()  # rand link (rand a number from 0.0 to 1.0)
+        while rand == 0.0:
+            rand = random.random()
+        probability_sum = 0.0
+        for nr, probability in enumerate(self.probabilities):
+            probability_sum += probability
+            if rand <= probability_sum:
+                selected_link_nr = self.links_numbers[nr]
+                return selected_link_nr
+        return -1

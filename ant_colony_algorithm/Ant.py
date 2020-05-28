@@ -10,17 +10,17 @@ class Ant:
         self.cycles_number = 0
         self.returns_to_base_number = 0
 
-    def return_to_base(self):
+    def return_to_base(self, source_node):
         self.path.clear()
         self.visited_nodes.clear()
+        self.current_node = source_node
         self.cycles_number = 0
         self.returns_to_base_number += 1
 
     def handle_cycle(self, source_node):
         self.cycles_number += 1
         if self.cycles_number == 3:  # cycle occured for the third time -> move the ant to the source node
-            self.current_node = source_node
-            self.return_to_base()
+            self.return_to_base(source_node)
             if self.returns_to_base_number == 10:
                 return False  # finish the ant's route
         else:  # only delete cycle from path

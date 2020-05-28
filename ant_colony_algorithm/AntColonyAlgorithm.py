@@ -1,6 +1,5 @@
 from ant_colony_algorithm.Ant import Ant
 from ant_colony_algorithm.AntColony import AntColony
-import random
 
 from ant_colony_algorithm.Navigator import Navigator
 from graph.Path import Path
@@ -48,26 +47,16 @@ class AntColonyAlgorithm:
             navigator = Navigator(self.alpha, self.beta)
             navigator.count_probabilities(ant, current_node.links)
 
-            rand = random.random()  # rand link (rand a number from 0.0 to 1.0)
-            while rand == 0.0:
-                rand = random.random()
-            probability_sum = 0.0
-            selected_link_nr = -1
-            for nr, probability in enumerate(navigator.probabilities):
-                probability_sum += probability
-                if rand <= probability_sum:
-                    selected_link_nr = navigator.links_numbers[nr]
-                    break
-            if selected_link_nr == -1:
-                current_node = source_node
-                ant.return_to_base()
+            next_link_nr = navigator.choose_next_link()
+            if next_link_nr == -1:
+                ant.return_to_base(source_node)
                 if ant.returns_to_base_number == 10:
                     return Path([], 0.0)
                 continue
-            the_next_link = [current_node.links[selected_link_nr]]
-            the_next_link_cost = current_node.links[selected_link_nr].cost
+            the_next_link = [current_node.links[next_link_nr]]
+            the_next_link_cost = current_node.links[next_link_nr].cost
             ant.path += (Path(the_next_link, the_next_link_cost))
-            current_node = current_node.links[selected_link_nr].target_node
+            current_node = current_node.links[next_link_nr].target_node
         return ant.path
 
     # @staticmethod
