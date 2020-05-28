@@ -70,13 +70,6 @@ class AntColonyAlgorithm:
             current_node = current_node.links[selected_link_nr].target_node
         return ant.path
 
-    @staticmethod
-    def is_node_in_visited_nodes(checked_node, visited_nodes):
-        if checked_node in visited_nodes:
-            return True
-        else:
-            return False
-
     # @staticmethod
     # def sort(list_to_sort, related_list):
     #     for i in range(len(list_to_sort)):
