@@ -15,40 +15,32 @@ class AntColonyAlgorithm:
         self.evaporation_speed = evaporation_speed
         self.min_pheromones_amount = min_pheromones_amount
 
-        self.ant_colony = AntColony(ant_colony_size)  # create ant colony
-
     def start(self, source_city, target_city, usa_map):
         usa_map.init_pheromones(self.min_pheromones_amount)  # init minimum pheromones amount on the links
         best_path = Path([])
 
+        ant_colony = AntColony(self.ant_colony_size, source_city)  # create ant colony
+
         for iteration in range(self.iterations_nr):
-            for ant in self.ant_colony.ants:
-                ant.path = self.find_path(usa_map.get_node(source_city), usa_map.get_node(target_city), ant)  # ant is looking for path from source to destination
+            for ant in ant_colony.ants:
+                ant.path = self.find_path(usa_map.get_node(source_city), usa_map.get_node(target_city))  # ant is looking for path from source to destination
                 if len(best_path) == 0 or ant.path < best_path:
                     best_path = ant.path
                     # self.usa_map.add_pheromones(ant.path)  # actualization of pheromones on current path (found by ant)   # triaaaaaaaal
                     print(str(best_path))
-            for ant in self.ant_colony.ants:
+            for ant in ant_colony.ants:
                 usa_map.add_pheromones(ant.path)  # actualization of pheromones on current path (found by ant)
             usa_map.evaporate_pheromones(self.evaporation_speed, self.min_pheromones_amount)
         return best_path
 
-    def find_path(self, source_node, target_node, ant):
-        ant = Ant()
+    def find_path(self, source_node, target_node):
+        ant = Ant(source_node)
         current_node = source_node
         if source_node == target_node:
             return Path([], 0.0)
         while current_node != target_node:
             if current_node in ant.visited_nodes:  # cycle occured
-                ant.cycles_number += 1
-                if ant.cycles_number == 3:  # cycle occured for the third time -> move the ant to the source node
-                    current_node = source_node
-                    ant.return_to_base()
-                    if ant.returns_to_base_number == 10:
-                        return Path([], 0.0)
-                else:  # only delete cycle from path
-                    ant.path.delete_last_cycle()
-                    AntColonyAlgorithm.delete_last_cycle(ant.visited_nodes, current_node)
+                ant.handle_cycle(source_node)
             ant.visited_nodes.append(current_node)
             probability_numerators = []
             probabilities = []
@@ -101,12 +93,6 @@ class AntColonyAlgorithm:
             return True
         else:
             return False
-
-    @staticmethod
-    def delete_last_cycle(visited_nodes, current_node):
-        for i in range(len(visited_nodes)-2, -1, -1):
-            if visited_nodes[i] == current_node:
-                return visited_nodes[:i]
 
     # @staticmethod
     # def sort(list_to_sort, related_list):

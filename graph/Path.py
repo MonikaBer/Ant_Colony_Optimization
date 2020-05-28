@@ -32,7 +32,7 @@ class Path:
         return len(self.links)
 
     def __add__(self, other):
-        if not(len(self) == 0 or not len(other) == 0) and self.links[-1].target_node != other.links[0].source_node:
+        if not (len(self) == 0 or not len(other) == 0) and self.links[-1].target_node != other.links[0].source_node:
             raise ArithmeticError
         return Path(self.links + other.links, self.cost + other.cost)
 
@@ -48,7 +48,7 @@ class Path:
 
     def delete_last_cycle(self):
         reference_node = self.links[-1].target_node
-        for i in range(len(self.links)-2, -1, -1):
+        for i in range(len(self.links) - 2, -1, -1):
             if self.links[i].source_node == reference_node:
                 for j in range(i, len(self.links), 1):
                     self.cost -= self.links[j].cost
