@@ -27,7 +27,7 @@ class AntColonyAlgorithm:
                     usa_map.add_pheromones(ant.path)
                 if len(best_path) == 0 or ant.path < best_path:
                     best_path = ant.path
-                    print(str(best_path))
+                    # print(str(best_path))
                     if algo_type == "MMAS":
                         usa_map.add_pheromones(ant.path)
             # for ant in ant_colony.ants:
