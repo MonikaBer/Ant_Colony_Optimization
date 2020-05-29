@@ -36,18 +36,18 @@ class AntColonyAlgorithm:
         return best_path
 
     def find_path(self, source_node, target_node):
-        ant = Ant(source_node)
-        current_node = source_node
         if source_node == target_node:
             return Path([], 0.0)
-        while current_node != target_node:
-            if current_node in ant.visited_nodes:
+        ant = Ant(source_node)
+        ant.current_node = source_node
+        while ant.current_node != target_node:
+            if ant.current_node in ant.visited_nodes:
                 is_ant_able_to_traverse = ant.handle_cycle(source_node)
                 if not is_ant_able_to_traverse:
                     return Path([], 0.0)
-            ant.visited_nodes.append(current_node)
+            ant.visited_nodes.append(ant.current_node)
             navigator = Navigator(self.alpha, self.beta)
-            navigator.count_probabilities(ant, current_node.links)
+            navigator.count_probabilities(ant)
 
             next_link_nr = navigator.choose_next_link()
             if next_link_nr == -1:
@@ -55,8 +55,8 @@ class AntColonyAlgorithm:
                 if ant.returns_to_base_number == 10:
                     return Path([], 0.0)
                 continue
-            the_next_link = [current_node.links[next_link_nr]]
-            the_next_link_cost = current_node.links[next_link_nr].cost
+            the_next_link = [ant.current_node.links[next_link_nr]]
+            the_next_link_cost = ant.current_node.links[next_link_nr].cost
             ant.path += (Path(the_next_link, the_next_link_cost))
-            current_node = current_node.links[next_link_nr].target_node
+            ant.current_node = ant.current_node.links[next_link_nr].target_node
         return ant.path

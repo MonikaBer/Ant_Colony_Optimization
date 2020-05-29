@@ -9,7 +9,7 @@ def main():
     ant_colony_algorithm = AntColonyAlgorithm(ant_colony_size=30, iterations_nr=100, alpha=1.0, beta=5.0,
                                               evaporation_speed=0.7, min_pheromones_amount=1.0)
 
-    # best_path = ant_colony_algorithm.start("C", "H")
+    # best_path = ant_colony_algorithm.start("C", "H", usa_map, "MMAS")
     # print("The best path has the total cost: {}".format(best_path.cost))
     # print("The best path:")
     # for link in best_path.links:
@@ -17,15 +17,16 @@ def main():
     #
     # print("\n\n")
 
-    # best_path = ant_colony_algorithm.start("H", "C")
+    # best_path = ant_colony_algorithm.start("H", "C", usa_map, "CAS")
     # print("The best path has the total cost: {}".format(best_path.cost))
     # print("The best path:")
     # for link in best_path.links:
     #     print("{} {} {}".format(link.source_node.city, link.target_node.city, link.cost))
 
     # yen = YenAlgorithm(ant_colony_algorithm, usa_map, "LosAngeles", "Atlanta")
+
     yen = YenAlgorithm(ant_colony_algorithm)
-    for n, path in enumerate(yen.run(20, usa_map, "C", "H", "CAS")):
+    for n, path in enumerate(yen.run(20, usa_map, "C", "H", "MMAS")):
         whole_cost = 0
         print(f"==============SCIEZKA {n}==============")
         for link in path.links:

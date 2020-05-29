@@ -10,8 +10,8 @@ class Navigator:
         self.alpha = alpha
         self.beta = beta
 
-    def count_probabilities(self, ant, links):
-        for nr, link in enumerate(links):
+    def count_probabilities(self, ant):
+        for nr, link in enumerate(ant.current_node.links):
             if len(ant.visited_nodes) > 1:
                 if link.target_node == ant.visited_nodes[-2]:
                     continue  # discard the last traversed link
