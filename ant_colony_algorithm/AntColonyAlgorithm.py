@@ -15,14 +15,14 @@ class AntColonyAlgorithm:
         self.evaporation_speed = evaporation_speed
         self.min_pheromones_amount = min_pheromones_amount
 
-    def start(self, source_city, target_city, usa_map, algo_type):
+    def start(self, source_city, target_city, usa_map, algo_type, taboo):
         usa_map.init_pheromones(self.min_pheromones_amount)  # init minimum pheromones amount on the links
         best_path = Path([])
         ant_colony = AntColony(self.ant_colony_size, source_city)  # create ant colony
 
         for iteration in range(self.iterations_nr):
             for ant in ant_colony.ants:
-                ant.path = self.find_path(usa_map.get_node(source_city), usa_map.get_node(target_city))
+                ant.path = self.find_path(usa_map.get_node(source_city), usa_map.get_node(target_city), taboo)
                 if algo_type == "CAS":
                     usa_map.add_pheromones(ant.path)
                 if len(best_path) == 0 or ant.path < best_path:
@@ -35,7 +35,7 @@ class AntColonyAlgorithm:
             usa_map.evaporate_pheromones(self.evaporation_speed, self.min_pheromones_amount)
         return best_path
 
-    def find_path(self, source_node, target_node):
+    def find_path(self, source_node, target_node, taboo):
         if source_node == target_node:
             return Path([], 0.0)
         ant = Ant(source_node)
@@ -47,7 +47,7 @@ class AntColonyAlgorithm:
                     return Path([], 0.0)
             ant.visited_nodes.append(ant.current_node)
             navigator = Navigator(self.alpha, self.beta)
-            navigator.count_probabilities(ant)
+            navigator.count_probabilities(ant, taboo)
 
             next_link_nr = navigator.choose_next_link()
             if next_link_nr == -1:

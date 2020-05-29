@@ -27,7 +27,7 @@ class YenAlgorithm:
         return self.best_paths
 
     def find_first_path(self, usa_map, start, stop, algo_type):
-        self.best_paths.append(self.ant_algo.start(start, stop, usa_map, algo_type))
+        self.best_paths.append(self.ant_algo.start(start, stop, usa_map, algo_type, []))
 
     def first_path_exists(self):
         if self.best_paths[0]:
