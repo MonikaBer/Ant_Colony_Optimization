@@ -15,8 +15,8 @@ def main():
     number_of_roots = int(sys.argv[4])
     ant_colony_size = int(sys.argv[5])
     ants_iterations = int(sys.argv[6])
-    alpha = float(sys.argv[7])
-    beta = float(sys.argv[8])
+    alpha = float(sys.argv[7].replace(',', '.'))
+    beta = float(sys.argv[8].replace(',', '.'))
     evaporation_speed = float(sys.argv[9])
     min_pheromones = float(sys.argv[10])
     ant_algo_type = sys.argv[11]
