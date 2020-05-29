@@ -54,7 +54,7 @@ class YenAlgorithm:
 
     def complete_path(self, usa_map, root_path, spur_city, stop_city, algo_type):
         # shortest_complete = Path(dijkstra(self.usa_map, spur_city, self.stop))
-        shortest_complete = self.ant_algo.start(spur_city, stop_city, usa_map, algo_type)
+        shortest_complete = self.ant_algo.start(spur_city, stop_city, usa_map, algo_type, [x.source_node.city for x in root_path])
         if shortest_complete:
             self.to_be_best_paths.add(root_path + shortest_complete)
 
