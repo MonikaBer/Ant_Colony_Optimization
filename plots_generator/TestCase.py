@@ -4,3 +4,6 @@ class TestCase:
         self.param_value = param_value
         self.costs = costs
         self.time = time
+
+    def fill_costs(self, n):
+        self.costs += [None] * (n-len(self.costs))

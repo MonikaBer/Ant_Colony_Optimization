@@ -18,19 +18,26 @@ class ParameterTester:
         for line in file:
             line = line.strip('\n')
             line_after_split = line.split(",")
-            self.test_cases.append(TestCase(line_after_split[0], line_after_split[1:len(line_after_split) - 1],
-                                            line_after_split[len(line_after_split) - 1]))
+            test_case = TestCase(
+                line_after_split[0],
+                line_after_split[1:len(line_after_split) - 1],
+                line_after_split[len(line_after_split) - 1]
+            )
+            test_case.fill_costs(7)
+            self.test_cases.append(test_case)
 
     def draw_cost_plot(self):
         plt.clf()
         self.set_plot_parameters(True, "cost")
         x = []
-        y = []
+        ys = []
         for test_case in self.test_cases:
-            for cost in test_case.costs:
-                x.append(test_case.param_value)
-                y.append(cost)
-        plt.plot(x, y, 'go')
+            x.append(test_case.param_value)
+            ys.append([float(value) for value in test_case.costs])
+        plt.ylim(min([min(y) for y in ys])-50, max([max(y) for y in ys])+50)
+        for n in range(len(ys[0])):
+            y = [item[n] for item in ys]
+            plt.plot(x, y, 'go')
         plt.savefig("test_plots/" + self.file_name[13:] + "_cost_plot", dpi=72)
 
     def draw_time_plot(self):
@@ -40,8 +47,9 @@ class ParameterTester:
         y = []
         for test_case in self.test_cases:
             x.append(test_case.param_value)
-            y.append(test_case.time)
-        plt.plot(x, y, 'b*')
+            y.append(int(test_case.time))
+        plt.ylim(0, max(y) + 5)
+        plt.plot(x, y, 'bo')
         plt.savefig("test_plots/" + self.file_name[13:] + "_time_plot", dpi=72)
 
     def set_plot_parameters(self, is_grid, y_label):
