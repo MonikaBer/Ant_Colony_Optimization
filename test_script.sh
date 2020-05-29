@@ -1,10 +1,10 @@
 #!/bin/bash
 
 python3=/usr/bin/python3
-test_name=ant_colony_size_test
-min_val=1
-max_val=46
-step=5
+test_name=evaporation_speed_addit_test
+min_val=0.5
+max_val=0.8
+step=0.02
 
 for algo_type in MMAS CAS; do 
 	for i in `seq $min_val $step $max_val`; do
@@ -13,7 +13,7 @@ for algo_type in MMAS CAS; do
 		start=`date +%s`
 		echo $i ${algo_type}
 		printf $i, >> $outputfile
-		$python3 ./main.py input LosAngeles Atlanta 7 $i 100 1.0 5.0 0.7 1 $algo_type >> $outputfile
+		$python3 ./main.py input LosAngeles Atlanta 7 30 100 1.0 5.0 $i 1 $algo_type >> $outputfile
 		end=`date +%s`
 		echo `expr $end - $start` >> $outputfile
 	done
