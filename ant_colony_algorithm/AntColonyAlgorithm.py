@@ -15,20 +15,23 @@ class AntColonyAlgorithm:
         self.evaporation_speed = evaporation_speed
         self.min_pheromones_amount = min_pheromones_amount
 
-    def start(self, source_city, target_city, usa_map):
+    def start(self, source_city, target_city, usa_map, algo_type):
         usa_map.init_pheromones(self.min_pheromones_amount)  # init minimum pheromones amount on the links
         best_path = Path([])
         ant_colony = AntColony(self.ant_colony_size, source_city)  # create ant colony
 
         for iteration in range(self.iterations_nr):
             for ant in ant_colony.ants:
-                ant.path = self.find_path(usa_map.get_node(source_city), usa_map.get_node(target_city))  # ant is looking for path from source to destination
+                ant.path = self.find_path(usa_map.get_node(source_city), usa_map.get_node(target_city))
+                if algo_type == "CAS":
+                    usa_map.add_pheromones(ant.path)
                 if len(best_path) == 0 or ant.path < best_path:
                     best_path = ant.path
-                    # self.usa_map.add_pheromones(ant.path)  # actualization of pheromones on current path (found by ant)   # triaaaaaaaal
                     print(str(best_path))
-            for ant in ant_colony.ants:
-                usa_map.add_pheromones(ant.path)  # actualization of pheromones on current path (found by ant)
+                    if algo_type == "MMAS":
+                        usa_map.add_pheromones(ant.path)
+            # for ant in ant_colony.ants:
+            #     usa_map.add_pheromones(ant.path)
             usa_map.evaporate_pheromones(self.evaporation_speed, self.min_pheromones_amount)
         return best_path
 

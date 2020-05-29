@@ -25,7 +25,7 @@ def main():
 
     # yen = YenAlgorithm(ant_colony_algorithm, usa_map, "LosAngeles", "Atlanta")
     yen = YenAlgorithm(ant_colony_algorithm)
-    for n, path in enumerate(yen.run(20, usa_map, "C", "H")):
+    for n, path in enumerate(yen.run(20, usa_map, "C", "H", "CAS")):
         whole_cost = 0
         print(f"==============SCIEZKA {n}==============")
         for link in path.links:

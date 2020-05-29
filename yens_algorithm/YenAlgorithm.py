@@ -12,8 +12,8 @@ class YenAlgorithm:
         self.best_paths = []
         self.to_be_best_paths = set()
 
-    def run(self, paths_to_find, usa_map, start, stop):
-        self.find_first_path(usa_map, start, stop)
+    def run(self, paths_to_find, usa_map, start, stop, algo_type):
+        self.find_first_path(usa_map, start, stop, algo_type)
         if self.first_path_exists():
             for i in range(paths_to_find-1):
                 usa_map.reset()
@@ -21,13 +21,13 @@ class YenAlgorithm:
                     spur_city = self.get_spur_city(node_id)
                     root_path = self.get_root_path(node_id)
                     self.remove_links_to_best(usa_map, root_path, node_id)
-                    self.complete_path(usa_map, root_path, spur_city, stop)
+                    self.complete_path(usa_map, root_path, spur_city, stop, algo_type)
                 if not self.add_next_shortest():
                     break
         return self.best_paths
 
-    def find_first_path(self, usa_map, start, stop):
-        self.best_paths.append(self.ant_algo.start(start, stop, usa_map))
+    def find_first_path(self, usa_map, start, stop, algo_type):
+        self.best_paths.append(self.ant_algo.start(start, stop, usa_map, algo_type))
 
     def first_path_exists(self):
         if self.best_paths[0]:
@@ -52,9 +52,9 @@ class YenAlgorithm:
             if root_path == Path(path[:node_id]):
                 usa_map.remove_link(path[node_id])
 
-    def complete_path(self, usa_map, root_path, spur_city, stop_city):
+    def complete_path(self, usa_map, root_path, spur_city, stop_city, algo_type):
         # shortest_complete = Path(dijkstra(self.usa_map, spur_city, self.stop))
-        shortest_complete = self.ant_algo.start(spur_city, stop_city, usa_map)
+        shortest_complete = self.ant_algo.start(spur_city, stop_city, usa_map, algo_type)
         if shortest_complete:
             self.to_be_best_paths.add(root_path + shortest_complete)
 
