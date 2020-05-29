@@ -1,34 +1,33 @@
 from ant_colony_algorithm.AntColonyAlgorithm import AntColonyAlgorithm
 from graph.USAMap import USAMap
 from yens_algorithm.YenAlgorithm import YenAlgorithm
+import sys
 from dijkstra.dijkstra import dijkstra
 
 
 def main():
-    usa_map = USAMap("input_test")
-    ant_colony_algorithm = AntColonyAlgorithm(ant_colony_size=30, iterations_nr=100, alpha=1.0, beta=5.0,
-                                              evaporation_speed=0.7, min_pheromones_amount=1.0)
+    if len(sys.argv) != 12 or sys.argv[1] == "help":
+        print("USAGE: python3 main.py input_file source target number_of_roots ant_colony_size ant_iterations alpha beta evaporation_speed min_pheromones ant_algo_type")
+        exit(1)
+    input_file = sys.argv[1]
+    start_city = sys.argv[2]
+    stop_city = sys.argv[3]
+    number_of_roots = int(sys.argv[4])
+    ant_colony_size = int(sys.argv[5])
+    ants_iterations = int(sys.argv[6])
+    alpha = float(sys.argv[7])
+    beta = float(sys.argv[8])
+    evaporation_speed = float(sys.argv[9])
+    min_pheromones = float(sys.argv[10])
+    ant_algo_type = sys.argv[11]
 
-    # best_path = ant_colony_algorithm.start("C", "H", usa_map, "MMAS")
-    # print("The best path has the total cost: {}".format(best_path.cost))
-    # print("The best path:")
-    # for link in best_path.links:
-    #     print("{} {} {}".format(link.source_node.city, link.target_node.city, link.cost))
-    #
-    # print("\n\n")
 
-    # best_path = ant_colony_algorithm.start("H", "C", usa_map, "CAS")
-    # print("The best path has the total cost: {}".format(best_path.cost))
-    # print("The best path:")
-    # for link in best_path.links:
-    #     print("{} {} {}".format(link.source_node.city, link.target_node.city, link.cost))
-
-    # yen = YenAlgorithm(ant_colony_algorithm, usa_map, "LosAngeles", "Atlanta")
-
+    usa_map = USAMap(input_file)
+    ant_colony_algorithm = AntColonyAlgorithm(ant_colony_size=ant_colony_size, iterations_nr=ants_iterations, alpha=alpha, beta=beta,
+                                              evaporation_speed=evaporation_speed, min_pheromones_amount=min_pheromones)
     yen = YenAlgorithm(ant_colony_algorithm)
-    for n, path in enumerate(yen.run(20, usa_map, "C", "H", "MMAS")):
-        print(n, str(path), path.cost)
-
+    for n, path in enumerate(yen.run(number_of_roots, usa_map, start_city, stop_city, ant_algo_type)):
+        print(path.cost, end=',')
 
 if __name__ == "__main__":
     main()
