@@ -13,7 +13,7 @@ for algo_type in MMAS CAS; do
 		start=`date +%s`
 		echo $i ${algo_type}
 		printf $i, >> $outputfile
-		$python3 ./main.py input LosAngeles Atlanta 7 30 100 1.0 5.0 $i 1 $algo_type >> $outputfile
+		$python3 ./main.py input LosAngeles Atlanta 7 30 100 1.0 5.0 $i 1 $algo_type 0 >> $outputfile
 		end=`date +%s`
 		echo `expr $end - $start` >> $outputfile
 	done
